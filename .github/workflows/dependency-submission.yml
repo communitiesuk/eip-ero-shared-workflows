@@ -1,0 +1,35 @@
+name: Dependency Submission
+
+on:
+  workflow_call:
+
+# Needed for OIDC authentication to AWS and dependency submission
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 17
+          cache: gradle
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.PREPROD_IAM_GITHUB_ROLE_ARN }}
+          role-session-name: ${{ github.run_id }}
+          aws-region: eu-west-2
+
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v4
+        env:
+          AWS_PROFILE_ARG: ""
