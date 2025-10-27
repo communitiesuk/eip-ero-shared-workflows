@@ -32,6 +32,7 @@ jobs:
           echo "Matching tags: $MATCHING_TAGS"
           echo "MATCHING_TAGS=$MATCHING_TAGS" >> $GITHUB_ENV
 
+  # TODO expand tag.yml to handle hotfix branches
   tag:
     runs-on: ubuntu-latest
     needs: check-untagged
