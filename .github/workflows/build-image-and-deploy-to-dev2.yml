@@ -19,12 +19,12 @@ on:
         description: The app name with the dev2 environment prepended, e.g., dev2-applications-api
 
 jobs:
-  tag:
+  get-latest-tag:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.bump-semver.outputs.new_version }}
+      version: ${{ steps.get-latest-tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Get latest patch version tag for major version
         id: get-latest-tag
@@ -33,23 +33,15 @@ jobs:
           repository: ${{ github.repository }}
           prefix: 'v2.'
 
-      - name: Bump version tag
-        uses: cabinetoffice/action-bump-semver@v1
-        id: bump-semver
-        with:
-          current_version: ${{ steps.get-latest-tag.outputs.tag }}
-          level: minor
-
-      - name: Push version tag
-        run: |
-          tag=${{ steps.bump-semver.outputs.new_version }}
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag "${tag}"
-          git push origin "${tag}"
+  bump-and-push-tag:
+    needs: get-latest-tag
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/bump-and-push-tag.yml@main
+    with:
+      version: ${{ needs.get-latest-tag.outputs.version }}
+      bump_level: minor
 
   build-and-push:
-    needs: tag
+    needs: bump-and-push-tag
     uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/build-and-push.yml@main
     with:
       version: ${{ needs.tag.outputs.version }}
@@ -60,12 +52,12 @@ jobs:
 
   deploy:
     needs:
-      - tag
+      - bump-and-push-tag
       - build-and-push
     uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/deploy.yml@main
     with:
       deploy_environment: dev2
-      version: ${{ needs.tag.outputs.version }}
+      version: ${{ needs.bump-and-push-tag.outputs.version }}
       app_name_with_env: ${{ inputs.app_name_dev2_prefix }}
       ecr_repo: ${{ inputs.ecr_repo }}
     secrets: inherit

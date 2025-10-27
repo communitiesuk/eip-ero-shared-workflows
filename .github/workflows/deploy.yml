@@ -72,7 +72,7 @@ jobs:
           image: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repo }}:${{ inputs.version }}
 
       - name: Update appspec file for environment
-        uses: jacobtomlinson/gha-find-replace@v2
+        uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: "{env}"
           replace: ${{ inputs.deploy_environment }}
