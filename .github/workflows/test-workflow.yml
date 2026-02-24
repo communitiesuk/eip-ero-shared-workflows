@@ -1,0 +1,6 @@
+name: test-workflow.yml
+on: push
+
+jobs:
+  tag:
+    uses: ./.github/workflows/tag.yml
