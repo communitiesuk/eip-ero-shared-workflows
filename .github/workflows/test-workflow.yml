@@ -3,4 +3,4 @@ on: push
 
 jobs:
   tag:
-    uses: ./.github/workflows/tag.yml@main
+    uses: ./.github/workflows/tag.yml
