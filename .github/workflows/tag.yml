@@ -14,7 +14,7 @@ jobs:
       - name: Get latest patch version tag for major version
         id: get-latest-tag
         run: |
-          echo "tag=v2.01.0" >> "$GITHUB_OUTPUT"
+          echo "tag=v2.1.0" >> "$GITHUB_OUTPUT"
 #        uses: oprypin/find-latest-tag@v1
 #        with:
 #          repository: ${{ github.repository }}
@@ -52,7 +52,7 @@ jobs:
       - name: Print 2
         run: |
           echo "New version is: ${{ steps.bump-semver.outputs.new_version }}
-          
+
       - name: Push version tag
         run: |
           tag=${{ steps.bump-semver.outputs.new_version }}
