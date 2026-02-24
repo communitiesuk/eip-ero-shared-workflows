@@ -34,7 +34,7 @@ jobs:
             echo "level=minor" >> "$GITHUB_OUTPUT"
           fi
 
-          
+
       - name: Print
         id: print
         run: |
@@ -49,6 +49,10 @@ jobs:
           npm install -g npm@11 --fund=false --audit=false
           echo "new_version=v$(npx -y semver@7 ${{ steps.get-latest-tag.outputs.tag }} -i ${{ steps.bump-level.outputs.level }})" >> $GITHUB_OUTPUT
 
+      - name: Print 2
+        run: |
+          echo "New version is: ${{ steps.bump-semver.outputs.new_version }}
+          
       - name: Push version tag
         run: |
           tag=${{ steps.bump-semver.outputs.new_version }}
