@@ -23,13 +23,24 @@ jobs:
         with:
           node-version: 22
 
+      - name: Decide version bump level
+        id: bump-level
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == hotfix/* ]]; then
+            echo "level=patch" >> "$GITHUB_OUTPUT"
+          else
+            echo "level=minor" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "Selected level: ${{ steps.bump-level.outputs.level }}"
+
       - name: Bump version tag
         id: bump-semver
         # Note the `v` prefix before the output of npx.
         # semver accepts input with a `v` prefix, but does not output the version with one.
         run: |
           npm install -g npm@11 --fund=false --audit=false
-          echo "new_version=v$(npx -y semver@7 ${{ steps.get-latest-tag.outputs.tag }} -i minor)" >> $GITHUB_OUTPUT
+          echo "new_version=v$(npx -y semver@7 ${{ steps.get-latest-tag.outputs.tag }} -i ${{ steps.bump-level.outputs.level }})" >> $GITHUB_OUTPUT
 
       - name: Push version tag
         run: |
