@@ -1,0 +1,51 @@
+name: Get latest, bump minor, and push version tag
+
+on:
+  workflow_call:
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump-semver.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Get latest patch version tag for major version
+        id: get-latest-tag
+        run: |
+          echo "tag=v2.1.0" >> "$GITHUB_OUTPUT"
+#        uses: oprypin/find-latest-tag@v1
+#        with:
+#          repository: ${{ github.repository }}
+#          prefix: 'v2.'
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Decide version bump level
+        id: bump-level
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == hotfix/v* ]]; then
+            echo "level=patch" >> "$GITHUB_OUTPUT"
+          else
+            echo "level=minor" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump version tag
+        id: bump-semver
+        # Note the `v` prefix before the output of npx.
+        # semver accepts input with a `v` prefix, but does not output the version with one.
+        run: |
+          npm install -g npm@11 --fund=false --audit=false
+          echo "new_version=v$(npx -y semver@7 ${{ steps.get-latest-tag.outputs.tag }} -i ${{ steps.bump-level.outputs.level }})" >> $GITHUB_OUTPUT
+
+      - name: Push version tag
+        run: |
+          tag=${{ steps.bump-semver.outputs.new_version }}
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag "${tag}"
+          git push origin "${tag}"
