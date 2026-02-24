@@ -14,7 +14,7 @@ jobs:
       - name: Get latest patch version tag for major version
         id: get-latest-tag
         run: |
-          echo "tag=v2.01" >> "$GITHUB_OUTPUT"
+          echo "tag=v2.01.0" >> "$GITHUB_OUTPUT"
 #        uses: oprypin/find-latest-tag@v1
 #        with:
 #          repository: ${{ github.repository }}
@@ -34,6 +34,11 @@ jobs:
             echo "level=minor" >> "$GITHUB_OUTPUT"
           fi
 
+          
+      - name: Print
+        id: print
+        run: |
+          echo "Branch is: $GITHUB_REF_NAME"
           echo "Selected level: ${{ steps.bump-level.outputs.level }}"
 
       - name: Bump version tag
