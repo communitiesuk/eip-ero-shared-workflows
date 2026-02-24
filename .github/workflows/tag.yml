@@ -13,10 +13,12 @@ jobs:
 
       - name: Get latest patch version tag for major version
         id: get-latest-tag
-        uses: oprypin/find-latest-tag@v1
-        with:
-          repository: ${{ github.repository }}
-          prefix: 'v2.'
+        run: |
+          echo "tag=v2.01" >> "$GITHUB_OUTPUT"
+#        uses: oprypin/find-latest-tag@v1
+#        with:
+#          repository: ${{ github.repository }}
+#          prefix: 'v2.'
 
       - name: Setup node
         uses: actions/setup-node@v6
