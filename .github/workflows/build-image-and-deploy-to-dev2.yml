@@ -22,12 +22,12 @@ jobs:
   get-latest-tag:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get-latest-tag.outputs.tag }}
+      version: ${{ steps.find-tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
 
       - name: Get latest patch version tag for major version
-        id: get-latest-tag
+        id: find-tag
         uses: oprypin/find-latest-tag@v1
         with:
           repository: ${{ github.repository }}
