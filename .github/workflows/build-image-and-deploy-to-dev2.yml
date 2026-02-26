@@ -24,7 +24,7 @@ jobs:
     outputs:
       version: ${{ steps.find-tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Get latest patch version tag for major version
         id: find-tag
