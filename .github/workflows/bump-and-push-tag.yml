@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       bump_level:
-        required: false
+        required: true
         type: string
 
 jobs:
