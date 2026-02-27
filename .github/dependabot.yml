@@ -1,0 +1,15 @@
+---
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "aleyipsoftwire"
+    groups:
+      # Group all github-action updates
+      github-actions:
+        applies-to: version-updates
+        patterns: [ "*" ]
