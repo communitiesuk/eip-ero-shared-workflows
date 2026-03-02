@@ -9,6 +9,10 @@ on:
       bump_level:
         required: true
         type: string
+    outputs:
+      version:
+        description: "Bumped version tag"
+        value: ${{ jobs.tag.outputs.version }}
 
 jobs:
   tag:
@@ -29,7 +33,7 @@ jobs:
         # semver accepts input with a `v` prefix, but does not output the version with one.
         run: |
           npm install -g npm@11 --fund=false --audit=false
-          echo "new_version=v$(npx -y semver@7 ${{ inputs.version }} -i ${{ inputs.bump_level }})" >> $GITHUB_OUTPUT
+          echo "new_version=v$(npx -y semver@7 ${{ inputs.version }} -i ${{ inputs.bump_level }})" >> "$GITHUB_OUTPUT"
 
       - name: Push version tag
         run: |
