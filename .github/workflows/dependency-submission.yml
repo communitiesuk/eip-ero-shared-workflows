@@ -30,6 +30,6 @@ jobs:
           aws-region: eu-west-2
 
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v5
+        uses: gradle/actions/dependency-submission@v6
         env:
           AWS_PROFILE_ARG: ""
