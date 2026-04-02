@@ -1,0 +1,58 @@
+name: todo-check.yml
+on:
+  workflow_call:
+
+jobs:
+  check-todos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: repository
+
+      - name: Checkout todo-checker
+        uses: actions/checkout@v4
+        with:
+          repository: Softwire/todo-checker
+          path: todo-checker
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 17
+
+      - name: Set up sbt launcher
+        uses: sbt/setup-sbt@v1
+
+      - name: Run todo-checker
+        working-directory: ./todo-checker
+        run: >
+          sbt "run
+          --src ../repository
+          --exclude-path-regex \.github\/workflows\/todo-check\.yml
+          --jira-url https://api.atlassian.com/ex/jira/e553f6c8-6cfb-4a79-ad95-fcb7b4b28a8c
+          --jira-project-key EIP1
+          --ignore-jira-project-key EROPSPT
+          --github-url ${{ github.server_url }}/${{ github.repository }}
+          --jira-username ${{ secrets.JIRA_USER }}
+          --jira-password ${{ secrets.JIRA_PASSWORD }}
+          --report-file ../todo-report.txt
+          --job-name ${{ github.event.repository.name }}
+          --write-to-jira
+          "
+      - name: Upload report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: todo-report.txt
+          path: todo-report.txt
+
+  send-slack-notification:
+    needs: check-todos
+    if: failure()
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/send-slack-notification.yml@main
+    with:
+      header_text: TODO Checker failure
+    secrets: inherit
