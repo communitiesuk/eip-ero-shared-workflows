@@ -1,4 +1,4 @@
-name: todo-check.yml
+name: todo-check-with-slack-notify.yml
 on:
   workflow_call:
 
