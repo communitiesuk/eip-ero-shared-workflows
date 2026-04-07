@@ -52,7 +52,7 @@ jobs:
   send-slack-notification:
     needs: check-todos
     if: failure()
-    uses: .github/workflows/send-slack-notification.yml
+    uses: ./.github/workflows/send-slack-notification.yml
     with:
       header_text: TODO Checker failure
     secrets: inherit
