@@ -1,0 +1,42 @@
+name: send-slack-notification.yml
+on:
+  workflow_call:
+    inputs:
+      header_text:
+        required: true
+        type: string
+        description: The part of the title that describes the notification type e.g. TODO Checker failure
+
+jobs:
+  send-slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send slack notification
+        run: |
+          GITHUB_ACTION_RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            cat <<EOF >>slack-notification.json
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "text": "${{ github.event.repository.name }} ${{inputs.header_text}}",
+                    "type": "plain_text"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "text": "<${GITHUB_ACTION_RUN_URL}|View job and investigate>",
+                      "type": "mrkdwn"
+                    }
+                  ]
+                }
+              ]
+            }
+          EOF
+          curl -X POST \
+               -H 'Content-type: application/json' \
+               --data '@slack-notification.json' \
+               ${{ secrets.SLACK_TODO_CHECKER_ALERTS_WEBHOOK }} 
