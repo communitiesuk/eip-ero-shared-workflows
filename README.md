@@ -18,8 +18,8 @@ Note that this is a repository secret, not an environment secret.
 
 Any repositories using the `todo-check-with-slack-notify` workflow should also have 
 the following repository secrets:
-- `JIRA_USER` - see login for Jira user "Digital Tools Jira" for TODO checker, found in Keeper folder Elections
-- `JIRA_PASSWORD` - use password for above login in Keeper
+- `JIRA_USER` - see login for Jira user "svc-ier-todo-checker" for TODO checker, found in Keeper folder Elections
+- `JIRA_PASSWORD` - use password for above user in Keeper
 - `SLACK_TODO_CHECKER_ALERTS_WEBHOOK` - use contents of Todo Github Action Incoming Webhook Url, found in Keeper folder EIP EROP
 
 Any repositories using the `send-slack-notification` workflow should have a repository 
