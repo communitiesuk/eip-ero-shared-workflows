@@ -1,6 +1,11 @@
 name: todo-check-with-slack-notify.yml
 on:
   workflow_call:
+    inputs:
+      exclude-path-regex:
+        required: true
+        type: string
+        description: The regex paths for files to exclude from the TODO checker
 
 jobs:
   check-todos:
@@ -31,7 +36,7 @@ jobs:
         run: >
           sbt "run
           --src ../repository
-          --exclude-path-regex \.github\/workflows\/todo-check\.yml
+          --exclude-path-regex ${{inputs.exclude-path-regex}}
           --jira-url https://api.atlassian.com/ex/jira/e553f6c8-6cfb-4a79-ad95-fcb7b4b28a8c
           --jira-project-key EIP1
           --ignore-jira-project-key EROPSPT
