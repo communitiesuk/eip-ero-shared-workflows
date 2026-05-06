@@ -36,7 +36,7 @@ permissions:
 jobs:
   copy-preprod-image-to-live:
     if: inputs.deploy_environment == 'live'
-    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/copy-preprod-image-to-prod.yml@main
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/copy-preprod-image-to-prod.yml@eip1-13829-use-read-only-rule-and-avoid-dev2-environment-on-main
     with:
       version: ${{ github.ref_name }}
       ecr_repo: ${{ inputs.ecr_repo }}
