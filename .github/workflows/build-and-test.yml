@@ -1,5 +1,4 @@
-# TODO:EIP1-13829 Switch to the read only Github role
-# Implicitly requires the PREPROD_IAM_GITHUB_ROLE_ARN secret to be set for the repository (not in any environment)
+# Implicitly requires the PREPROD_READ_ONLY_IAM_GITHUB_ROLE_ARN secret to be set for the repository (not in any environment)
 
 name: Build and Test
 
@@ -33,8 +32,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          # TODO:EIP1-13829 Switch to the read only Github role
-          role-to-assume: ${{ secrets.PREPROD_IAM_GITHUB_ROLE_ARN }}
+          role-to-assume: ${{ secrets.PREPROD_READ_ONLY_IAM_GITHUB_ROLE_ARN }}
           role-session-name: ${{ github.run_id }}
           aws-region: eu-west-2
 
