@@ -59,14 +59,14 @@ jobs:
 
   bump-and-push-tag:
     needs: get-latest-tag
-    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/bump-and-push-tag.yml@eip1-13829-use-read-only-rule-and-avoid-dev2-environment-on-main
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/bump-and-push-tag.yml@main
     with:
       version: ${{ needs.get-latest-tag.outputs.version }}
       bump_level: patch
 
   build-and-push:
     needs: bump-and-push-tag
-    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/build-and-push.yml@eip1-13829-use-read-only-rule-and-avoid-dev2-environment-on-main
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/build-and-push.yml@main
     with:
       version: ${{ needs.bump-and-push-tag.outputs.version }}
       image_name: ${{ inputs.image_name }}
