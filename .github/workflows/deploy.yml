@@ -43,7 +43,7 @@ jobs:
 
   deployment:
     runs-on: ubuntu-latest
-    environment: ${{ case(inputs.use_preprod_main_iam_github_role, null, inputs.preprod_deploy_environment) }}
+    environment: ${{ case(inputs.use_preprod_main_iam_github_role, null, inputs.deploy_environment) }}
     # Should run this if the copy-preprod-image-to-live step is skipped as not always needed
     # Avoid using always() as failures or cancellations should not require this step to run
     if: ${{ !failure() && !cancelled() }}
