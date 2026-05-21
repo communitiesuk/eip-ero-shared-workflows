@@ -1,5 +1,4 @@
-# Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the dev2 environment
-# if use_preprod_main_iam_github_role is true the PREPROD_IAM_GITHUB_ROLE_ARN secret must be set instead
+# Implicitly requires the PREPROD_IAM_GITHUB_ROLE_ARN secret to be set for the dev2 environment
 
 name: Build image and deploy to dev2 on merge to main
 
@@ -18,11 +17,6 @@ on:
         required: true
         type: string
         description: The app name with the dev2 environment prepended, e.g., dev2-applications-api
-      use_preprod_main_iam_github_role:
-        required: false
-        type: boolean
-        default: false
-        description: If true, use the repository preprod main IAM role rather than the environment specific role
 
 jobs:
   get-latest-tag:
