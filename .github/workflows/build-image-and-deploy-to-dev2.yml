@@ -1,4 +1,4 @@
-# Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the dev2 environment
+# Implicitly requires the PREPROD_IAM_GITHUB_ROLE_ARN secret to be set for the dev2 environment
 
 name: Build image and deploy to dev2 on merge to main
 
@@ -48,6 +48,7 @@ jobs:
       image_name: ${{ inputs.image_name }}
       ecr_repo: ${{ inputs.ecr_repo }}
       preprod_deploy_environment: dev2
+      use_preprod_main_iam_github_role: true
     secrets: inherit
 
   deploy:
@@ -57,6 +58,7 @@ jobs:
     uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/deploy.yml@main
     with:
       deploy_environment: dev2
+      use_preprod_main_iam_github_role: true
       version: ${{ needs.bump-and-push-tag.outputs.version }}
       app_name_with_env: ${{ inputs.app_name_dev2_prefix }}
       ecr_repo: ${{ inputs.ecr_repo }}

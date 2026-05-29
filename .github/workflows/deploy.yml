@@ -1,5 +1,5 @@
 # Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the target environment.
-# If the target environment is live, the PREPROD_IAM_GITHUB_ROLE_ARN secret must also set.
+# If the target environment is live, the PREPROD_READ_ONLY_IAM_GITHUB_ROLE_ARN secret must also set.
 
 name: Deploy
 
@@ -21,6 +21,11 @@ on:
         required: true
         type: string
         description: The ECR repository name, e.g., applications-api-repo
+      use_preprod_main_iam_github_role:
+        required: false
+        type: boolean
+        default: false
+        description: If true, use the repository preprod main IAM role rather than the environment specific role
 
 # Needed for OIDC authentication to AWS
 permissions:
@@ -38,7 +43,7 @@ jobs:
 
   deployment:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.deploy_environment }}
+    environment: ${{ case(inputs.use_preprod_main_iam_github_role, null, inputs.deploy_environment) }}
     # Should run this if the copy-preprod-image-to-live step is skipped as not always needed
     # Avoid using always() as failures or cancellations should not require this step to run
     if: ${{ !failure() && !cancelled() }}
@@ -49,7 +54,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: ${{ secrets.IAM_GITHUB_ROLE_ARN }}
+          role-to-assume: ${{ case(inputs.use_preprod_main_iam_github_role, secrets.PREPROD_IAM_GITHUB_ROLE_ARN, secrets.IAM_GITHUB_ROLE_ARN) }}
           role-session-name: ${{ github.run_id }}
           aws-region: eu-west-2
 

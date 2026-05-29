@@ -1,4 +1,5 @@
-# Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the target environment
+# Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the target environment or
+# if use_preprod_main_iam_github_role is true the PREPROD_IAM_GITHUB_ROLE_ARN secret must be set
 
 name: Build image and push to ECR
 
@@ -21,6 +22,11 @@ on:
         required: true
         type: string
         description: The environment to deploy to, e.g., dev2, int
+      use_preprod_main_iam_github_role:
+        required: false
+        type: boolean
+        default: false
+        description: If true, use the repository preprod main IAM role rather than the environment specific role
 
 # Needed for OIDC authentication to AWS
 permissions:
@@ -29,7 +35,7 @@ permissions:
 
 jobs:
   build-and-push:
-    environment: ${{ inputs.preprod_deploy_environment }}
+    environment: ${{ case(inputs.use_preprod_main_iam_github_role, null, inputs.preprod_deploy_environment) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -44,7 +50,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: ${{ secrets.IAM_GITHUB_ROLE_ARN }}
+          role-to-assume: ${{ case(inputs.use_preprod_main_iam_github_role, secrets.PREPROD_IAM_GITHUB_ROLE_ARN, secrets.IAM_GITHUB_ROLE_ARN) }}
           role-session-name: ${{ github.run_id }}
           aws-region: eu-west-2
 
