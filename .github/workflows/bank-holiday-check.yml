@@ -1,0 +1,22 @@
+# This is a reusable workflow used by infra to prevent scheduled deployments from happening on bank holidays
+name: Bank Holiday Check
+
+on:
+  workflow_call:
+
+jobs:
+  check-bank-holiday:
+    runs-on: ubuntu-latest
+    outputs:
+      is_bank_holiday: ${{ steps.check.outputs.is_bank_holiday }}
+    steps:
+      - name: Check if today is a bank holiday
+        id: check
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          IS_HOLIDAY=$(
+            curl -s https://www.gov.uk/bank-holidays.json |
+            jq --arg today "$TODAY" \
+              '[.["england-and-wales"].events[] | select(.date == $today)] | length > 0'
+          )
+          echo "is_bank_holiday=$IS_HOLIDAY" >> "$GITHUB_OUTPUT"
