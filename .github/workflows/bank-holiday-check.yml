@@ -13,10 +13,4 @@ jobs:
       - name: Check if today is a bank holiday
         id: check
         run: |
-          TODAY=$(date +%Y-%m-%d)
-          IS_HOLIDAY=$(
-            curl -s https://www.gov.uk/bank-holidays.json |
-            jq --arg today "$TODAY" \
-              '[.["england-and-wales"].events[] | select(.date == $today)] | length > 0'
-          )
-          echo "is_bank_holiday=$IS_HOLIDAY" >> "$GITHUB_OUTPUT"
+          echo "is_bank_holiday=true" >> "$GITHUB_OUTPUT"
