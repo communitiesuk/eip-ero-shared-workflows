@@ -1,3 +1,4 @@
+# This is a reusable workflow used by infra to prevent scheduled deployments from happening on bank holidays
 name: Bank Holiday Check
 
 on:
