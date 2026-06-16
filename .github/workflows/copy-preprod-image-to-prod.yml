@@ -35,7 +35,7 @@ jobs:
 
       - name: Login to Amazon ECR (preprod)
         id: login-ecr-preprod
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v2.1.5
 
       - name: pull image from preprod Amazon ECR
         id: pull-image
@@ -57,7 +57,7 @@ jobs:
 
       - name: Login to Amazon ECR (live)
         id: login-ecr-live
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v2.1.5
 
       - name: push image to live Amazon ECR
         id: push-image-live
