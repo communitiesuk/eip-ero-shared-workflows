@@ -23,13 +23,13 @@ jobs:
           path: todo-checker
 
       - name: Set up JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.2.0
         with:
           distribution: corretto
           java-version: 17
 
       - name: Set up sbt launcher
-        uses: sbt/setup-sbt@v1
+        uses: sbt/setup-sbt@v1.2.1
 
       - name: Run todo-checker
         working-directory: ./todo-checker

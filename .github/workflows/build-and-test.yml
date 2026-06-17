@@ -23,7 +23,7 @@ jobs:
       # Installing JDK needs to come after checking out the repo because
       # the action (setup-java) looks for the Gradle wrapper files
       - name: Install JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.2.0
         with:
           distribution: corretto
           java-version: 17
