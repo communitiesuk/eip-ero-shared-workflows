@@ -3,6 +3,8 @@ name: Bank Holiday Check
 
 on:
   workflow_call:
+    outputs:
+      is_bank_holiday: ${{ jobs.check-bank-holiday.outputs.is_bank_holiday }}
 
 jobs:
   check-bank-holiday:
