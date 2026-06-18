@@ -26,3 +26,11 @@ jobs:
           echo $IS_HOLIDAY
           
           echo "is_bank_holiday=$IS_HOLIDAY" >> "$GITHUB_OUTPUT"
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: check-bank-holiday
+    steps:
+      - env:
+          OUTPUT1: ${{needs.check-bank-holiday.outputs.is_bank_holiday}}
+        run: echo "$OUTPUT1"
