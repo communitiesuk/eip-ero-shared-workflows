@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.3
         with:
           ref: main
       # Installing JDK needs to come after checking out the repo because the action (setup-java) looks for the gradle wrapper files
