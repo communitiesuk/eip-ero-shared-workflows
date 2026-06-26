@@ -12,18 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: repository
 
       - name: Checkout todo-checker
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Softwire/todo-checker
           path: todo-checker
 
       - name: Set up JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.3.0
         with:
           distribution: corretto
           java-version: 17
