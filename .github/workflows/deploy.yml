@@ -49,10 +49,10 @@ jobs:
     if: ${{ !failure() && !cancelled() }}
     needs: copy-preprod-image-to-live
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           role-to-assume: ${{ case(inputs.use_preprod_main_iam_github_role, secrets.PREPROD_IAM_GITHUB_ROLE_ARN, secrets.IAM_GITHUB_ROLE_ARN) }}
           role-session-name: ${{ github.run_id }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        uses: aws-actions/amazon-ecs-render-task-definition@v1.8.5
         with:
           task-definition: task-definition.json
           container-name: ${{ inputs.app_name_with_env }}-ecs-container
