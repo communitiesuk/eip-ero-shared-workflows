@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: repository
 
       - name: Checkout todo-checker
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Softwire/todo-checker
           path: todo-checker
