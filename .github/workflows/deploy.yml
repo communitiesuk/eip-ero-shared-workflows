@@ -49,7 +49,7 @@ jobs:
     if: ${{ !failure() && !cancelled() }}
     needs: copy-preprod-image-to-live
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -85,7 +85,7 @@ jobs:
           regex: false
 
       - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2.6.2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ inputs.app_name_with_env }}-ecs-service
