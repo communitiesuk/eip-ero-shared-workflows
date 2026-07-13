@@ -41,13 +41,21 @@ jobs:
       ecr_repo: ${{ inputs.ecr_repo }}
     secrets: inherit
 
+  copy-preprod-image-to-drt:
+    if: inputs.deploy_environment == 'drt'
+    uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/copy-preprod-image-to-drtest.yml@main
+    with:
+      version: ${{ github.ref_name }}
+      ecr_repo: ${{ inputs.ecr_repo }}
+    secrets: inherit
+
   deployment:
     runs-on: ubuntu-latest
     environment: ${{ case(inputs.use_preprod_main_iam_github_role, null, inputs.deploy_environment) }}
     # Should run this if the copy-preprod-image-to-live step is skipped as not always needed
     # Avoid using always() as failures or cancellations should not require this step to run
     if: ${{ !failure() && !cancelled() }}
-    needs: copy-preprod-image-to-live
+    needs: [copy-preprod-image-to-live, copy-preprod-image-to-drt]
     steps:
       - uses: actions/checkout@v6
 

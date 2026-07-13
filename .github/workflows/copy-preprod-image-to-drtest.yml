@@ -1,0 +1,81 @@
+# Implicitly requires the IAM_GITHUB_ROLE_ARN secret to be set for the drtest environment,
+# and PREPROD_READ_ONLY_IAM_GITHUB_ROLE_ARN secrets to be set for the repository (not in any environment)
+
+name: Copy preprod image to drtest
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      ecr_repo:
+        required: true
+        type: string
+        description: The ECR repository name, e.g., applications-api-repo
+
+# Needed for OIDC authentication to AWS
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: drt
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials (preprod)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.PREPROD_READ_ONLY_IAM_GITHUB_ROLE_ARN }}
+          role-session-name: ${{ github.run_id }}
+          aws-region: eu-west-2
+
+      - name: Login to Amazon ECR (preprod)
+        id: login-ecr-preprod
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: pull image from preprod Amazon ECR
+        id: pull-image
+        env:
+          AWS_PROFILE_ARG: ""
+          PREPROD_ECR_REGISTRY: ${{ steps.login-ecr-preprod.outputs.registry }}
+          ECR_REPOSITORY: ${{ inputs.ecr_repo }}
+          IMAGE_TAG: ${{ inputs.version }}
+        run: |
+          IMAGE=$PREPROD_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker pull $IMAGE
+
+      - name: Configure AWS credentials (drt)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.IAM_GITHUB_ROLE_ARN }}
+          role-session-name: ${{ github.run_id }}
+          aws-region: eu-west-2
+
+      - name: Login to Amazon ECR (drtest)
+        id: login-ecr-drtest
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: push image to drtest Amazon ECR
+        id: push-image-drtest
+        env:
+          PREPROD_ECR_REGISTRY: ${{ steps.login-ecr-preprod.outputs.registry }}
+          DRTEST_ECR_REGISTRY: ${{ steps.login-ecr-drtest.outputs.registry }}
+          ECR_REPOSITORY: ${{ inputs.ecr_repo }}
+          IMAGE_TAG: ${{ inputs.version }}
+        run: |
+          PREPROD_IMAGE=$PREPROD_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          IMAGE=$DRTEST_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          AWS_ACCOUNT_ID="$( echo $ECR_REGISTRY | sed 's@^[^0-9]*\([0-9]\+\).*@\1@' )"
+          echo "Describing images for $AWS_ACCOUNT_ID"
+
+          if ! aws ecr describe-images --registry-id $AWS_ACCOUNT_ID --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG; then
+            echo "Need to push new image"
+            docker tag $PREPROD_IMAGE $IMAGE
+            docker push $IMAGE
+            echo "Have successfully pushed new image"
+          fi
