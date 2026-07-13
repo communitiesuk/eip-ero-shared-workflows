@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
 
   copy-preprod-image-to-drt:
-    if: inputs.deploy_environment == 'drtest'
+    if: inputs.deploy_environment == 'drt'
     uses: communitiesuk/eip-ero-shared-workflows/.github/workflows/copy-preprod-image-to-drtest.yml@main
     with:
       version: ${{ github.ref_name }}
