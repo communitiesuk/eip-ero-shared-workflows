@@ -9,7 +9,7 @@ updates:
     cooldown:
       default-days: 7
     assignees:
-      - "aleyipsoftwire"
+      - "conwhisw"
     groups:
       # Group all github-action updates
       github-actions:
