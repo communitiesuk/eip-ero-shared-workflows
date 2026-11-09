@@ -30,6 +30,8 @@ jobs:
 
       - name: Set up sbt launcher
         uses: sbt/setup-sbt@v1.5.13
+        with:
+          sbt-runner-version: '1.12.12'
 
       - name: Run todo-checker
         working-directory: ./todo-checker
