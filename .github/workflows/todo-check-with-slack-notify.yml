@@ -30,6 +30,7 @@ jobs:
 
       - name: Set up sbt launcher
         uses: sbt/setup-sbt@v1.5.13
+        # Softwire's todo-checker is incompatible with sbt-runner-version 2+
         with:
           sbt-runner-version: '1.12.12'
 
